@@ -1,0 +1,87 @@
+<div class="world-centre">
+    <h3 style="margin-left:20px;">World Repository</h3>
+    <div class="world-centre world">
+        <h4>Worlds</h4>
+        <div class="world-centre worlds">
+            <table>
+                <tr>
+                    <td>World #</td>
+                    <td> Players</td>
+                    <td> Address</td>
+                    <td> Last Response</td>
+                </tr>
+                [$worlds]
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="server-configs">
+    <h4 class="error"></h4>
+    <h3 style="margin-left:20px;">Global Server Configs</h3>
+    <div class="server-configs config">
+        <h4>Configurations</h4>
+        <div class="server-configs configs">
+            <table id="config-table">
+                <tr>
+                    <td>Config Name</td>
+                    <td>Value</td>
+                    <td>Data Type</td>
+                </tr>
+                [$configs]
+            </table>
+        </div>
+    </div>
+    <input type="submit" value="Save Configs" name="submit" style="float:right; margin-right:20px;" class="save">
+</div>
+
+<div class="development-log" style="padding-top:30px;">
+    <h3 style="margin-left:20px;">Devlopment Log Update</h3>
+    <h4 class="error"></h4>
+    <li style="margin-left:20px;">
+        Administrators can enter small devlopment log updates to keep the placers posted with current updates.<br>These
+        are <strong>small</strong> short snippets of updates only.
+        <label class="styled-row" for="input" style="margin-left:20px;padding-top:20px;padding-bottom:15px;"><p>
+            Update:</p><input type="text" class="updateval" name="update" placeholder="Enter an update"
+                              value=""/></label>
+        <input type="submit" value="Push Update Log" name="submit" class="update-log">
+        <input type="submit" value="Save Configs" name="submit" class="save">
+    </li>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(document).delegate(".save", "click", function () {
+            var table = $("#config-table");
+            var count = 0;
+            var configString = "";
+            table.find('tr').each(function (i, el) {
+                count++;
+                if (count > 1) {
+                    var $tds = $(this).find('td');
+                    var key = $tds.eq(0).text();
+                    var value = $tds.eq(1).text();
+                    configString += "{" + key + "`" + value + "}~";
+                }
+
+            });
+            $.post("/lib/sys/ActionHandler.php?action=ModuleAction&name=AdministratorPreferences&modAction=save", {configs: configString}, function (data) {
+                if (data.lastIndexOf("SUCCESS", 0) === 0) {
+                    data = data.replace("SUCCESS", "");
+                } else {
+                    sendError(".server-configs > .error", data);
+                }
+            });
+        });
+        $(".update-log").click(function () {
+            $.post("/lib/sys/ActionHandler.php?action=ModuleAction&name=AdministratorPreferences&modAction=updateLog", {update: $(".updateval").val()}, function (data) {
+                if (data == "SUCCESS") {
+                    sendError(".development-log > .error", "You successfully pushed an update to the development log.");
+                } else {
+                    sendError(".development-log > .error", data);
+                }
+            });
+        });
+    });
+</script>

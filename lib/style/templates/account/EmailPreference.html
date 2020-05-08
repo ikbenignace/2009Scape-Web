@@ -1,0 +1,39 @@
+<div id="email-pref">
+    <h3>Change Your Registered Email Address</h3>
+    <p style="margin-left:18px;">Your current email is set to <strong>[$email]</strong><br>
+        To change your email address, <a>click here</a>
+        <br>We will send you an email to your current registered email address, this will contain a link to make the
+        change.
+    </p>
+</div>
+<script>
+    $(document).ready(function () {
+        var action = "";
+        var divClone = "";
+        var busy = false;
+        $("#email-pref").click(function () {
+            if (busy) {
+                return false;
+            }
+            if (action == "sent") {
+                action = "";
+                $("#email-pref").html(divClone);
+                return false;
+            }
+            busy = true;
+            $.post("/lib/sys/ActionHandler.php?action=ModuleAction&name=EmailPreference&modAction=update", function (data) {
+                if (data == "SUCCESS") {
+                    if (divClone == "") {
+                        divClone = $("#email-pref").clone();
+                    }
+                    $("#email-pref").html("Thank you.<br>We've sent you an email to your current email address.<br>Follow the instructions in the email to complete this process.<br>Check your spam/junk folder if you don't receive the email.<a><br><strong>Back</a>");
+                    action = "sent";
+                } else {
+                    sendError(".error", data);
+                }
+                busy = false;
+            });
+            return false;
+        });
+    });
+</script>

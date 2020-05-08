@@ -1,0 +1,28 @@
+<h3 style="margin-left:20px;">Icon Selection</h3>
+<div style="margin-left:20px;">
+    <ul class="iconselect">
+        [$icons]
+    </ul>
+</div>
+
+<script>
+    $(".iconselect > li").click(function () {
+        var ele = $(this);
+        var iconId = $(this).data("icon");
+        $(".iconselect > li").each(function () {
+            $(this).css("pointer-events", "none");
+        });
+        $.post("/lib/sys/ActionHandler.php?action=ModuleAction&name=DonatorPreferences&modAction=change", {icon: iconId}, function (data) {
+            if (data != "SUCCESS") {
+                alert(data);
+            } else {
+                $(".iconselect > li.active").removeClass("active");
+                ele.addClass("active");
+            }
+            $(".iconselect > li").each(function () {
+                $(this).css("pointer-events", "auto");
+            });
+        });
+    });
+
+</script>

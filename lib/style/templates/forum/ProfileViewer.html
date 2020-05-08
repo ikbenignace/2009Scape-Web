@@ -1,0 +1,149 @@
+<div class="profile_viewer" data-name="[$name]">
+    <div class="left-content">
+        <div class="user">
+            <div class="username">
+                <h3>[$username] <img style="padding-left:2px;" src="/lib/images/forums/[$status].png"></h3>
+            </div>
+            <img src="[$profileImage]"/>
+            <span style='[$groupStyle]'>[$groupName]</span>
+            <div class='rank'>
+                <span>[$rank]</span>
+            </div>
+            <span>[$group]</span>
+            <span>[$posts] posts</span>
+            <div class='userbars'>
+                [$userbars]
+            </div>
+            <span style="[$addFriendStyle]"><a data-id='0' href="#"><i class="fa fa-plus"></i> Add as Friend</a></span>
+            <span><a style="[$addIgnoreStyle]" data-id='1' href="#"><i
+                    class="fa fa-minus"></i> Add to Ignore list</a></span>
+            <span><a data-id='2' href="#"><i class="fa fa-envelope"></i> Send Message</a></span>
+            <span style="[$removeFriendStyle]"><a data-id='3' href="#"><i class="fa fa-minus"></i> Remove as Friend</a></span>
+            <span><a style="[$removeIgnoreStyle]" data-id='4' href="#"><i class="fa fa-plus"></i> Remove from Ignore list</a></span>
+        </div>
+        <div class="statistics">
+            <span><strong>Join  Date: </strong>[$joinDate]</span>
+            <span><strong>Last Activity: </strong>[$lastActive]</span>
+            <span><strong>Thanks Given: </strong>[$thanksGiven]</span>
+            <span><strong>Thanks Recieved: </strong>[$thanksRecieved]</span>
+        </div>
+        <div class="recent_visitors">
+            <span>The last 10 visitor(s) to this page were: [$visitors]</span>
+        </div>
+    </div>
+    <div class="right-content">
+        <div class="content_area">
+            <div class="tabs_header">
+                <ul>
+                    [$tabs]
+                </ul>
+            </div>
+            <h4 class="error"></h4>
+            <div class="tab_content">
+                [$tabContent]
+            </div>
+            <script type="text/javascript" src="/lib/style/js/ckeditor/ckeditor.js"></script>
+            <div class="editor" style="[$editorDisplay]">
+                <h4 class="error"></h4>
+                <div class="core">
+                    <textarea class="ckeditor" name="editor" rows="8" cols="80"></textarea>
+                    <button class="btn post">Post Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        var editor = null;
+
+        $(document).delegate(".pagination > li", "click", function () {
+            var name = $(".profile_viewer").data("name");
+            var modAction = $(".pagination").data("id") == 0 ? "showFriends" : "showVisitorMessages";
+            $.post("/lib/sys/ActionHandler.php?action=ModuleAction&name=ProfileViewer&modAction=" + modAction, {
+                name: name,
+                page: $(this).html()
+            }, function (data) {
+                var s = data.charAt(1) + data.charAt(2);
+                if (s == "UC" || s == "SU") {
+                    data = data.replace("SUCCESS", "");
+                    $(".tab_content").html(data);
+                } else {
+                    sendError(".error", data);
+                }
+            });
+        });
+
+        $(".tabs_header a").click(function () {
+            var tabId = $(this).data("id");
+            var name = $(".profile_viewer").data("name");
+            $("a").removeClass("active");
+            $(this).addClass("active");
+            if (tabId != 2) {
+                $(".editor").hide();
+            }
+            $(".tab_content").html("<h4 style='padding:20px;'>Loading...</h4>");
+            $.post("/lib/sys/ActionHandler.php?action=ModuleAction&name=ProfileViewer&modAction=viewTab", {
+                tabId: tabId,
+                name: name
+            }, function (data) {
+                var s = data.charAt(1) + data.charAt(2);
+                if (s == "UC" || s == "SU") {
+                    data = data.replace("SUCCESS", "");
+                    $(".tab_content").html(data);
+                    if (tabId == 2) {
+                        $(".editor").show();
+                    }
+                } else {
+                    sendError(".error", data);
+                }
+            });
+        });
+
+        $(".user a").click(function () {
+            var id = $(this).data("id");
+            var name = $(".profile_viewer").data("name");
+            if (id == 2) {
+                window.location.href = "/account/message/compose/index.php?recipient=" + name;
+                return;
+            }
+            $.post("/lib/sys/ActionHandler.php?action=ModuleAction&name=ProfileViewer&modAction=userAction", {
+                name: name,
+                id: id
+            }, function (data) {
+                if (data == "SUCCESS") {
+                    window.location.href = "/community/members/index.php?name=" + name;
+                } else {
+                    sendError(".error", data);
+                }
+            });
+        });
+
+        var editor = CKEDITOR.replace("editor");
+
+        var busy = false;
+
+        $(document).delegate(".editor > .core > .post", "click", function () {
+            if (busy == true) {
+                return;
+            }
+            var name = $(".profile_viewer").data("name");
+            busy = true;
+            $.post("/lib/sys/ActionHandler.php?action=ModuleAction&name=ProfileViewer&modAction=postMessage", {
+                html: editor.getData(),
+                name: name
+            }, function (data) {
+                busy = false;
+                if (data.lastIndexOf("SUCCESS", 0) === 0) {
+                    data = data.replace("SUCCESS", "");
+                    window.location.href = data;
+                } else {
+                    $(".editor > .error").html(data);
+                    $(".editor > .error").css("display", "block");
+                }
+            });
+        });
+
+    });
+</script>

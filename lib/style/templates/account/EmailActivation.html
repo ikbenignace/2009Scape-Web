@@ -1,0 +1,29 @@
+<div style="padding:20px;">
+    <li>
+        [$content]
+        <input type="text" class="email-code" style="display:none" value="[$code]">
+        <label class="styled-row" for="input" style="margin: 20px auto;"><p>E-mail</p><input type="text"
+                                                                                             class="emailval"
+                                                                                             name="email"
+                                                                                             placeholder="Enter an e-mail to validate"
+                                                                                             value="[$email]"/></label>
+        <input type="submit" value="Update & Send E-mail" name="submit" class="updateemail">
+    </li>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".updateemail").click(function () {
+            if (!busy) {
+                busy = true;
+                var code = $(".email-code").val();
+                $.post("/lib/sys/ActionHandler.php?action=EmailValidation", {
+                    email: $(".emailval").val(),
+                    code: code
+                }, function (data) {
+                    sendError(".error", data);
+                    busy = false;
+                });
+            }
+        });
+    });
+</script>

@@ -1,0 +1,58 @@
+<h4 class="error"></h4>
+<div class="message-centre type">
+    <h4>Received Messages</h4>
+    <div class="message-centre messages">
+        [$received]
+    </div>
+</div>
+
+<div class="message-centre type">
+    <h4>Sent Messages</h4>
+    <div class="message-centre messages">
+        [$sent]
+    </div>
+</div>
+
+<div class="message-centre type">
+    <h4>Read Messages</h4>
+    <div class="message-centre messages">
+        [$read]
+    </div>
+</div>
+<button style="float:right; margin-right:20px;" class="btn compose">Compose</button>
+<button style="float:right; margin-right:20px;" class="btn refresh">Refresh</button>
+
+<script>
+    $(document).ready(function () {
+        $(document).delegate(".table-message", "click", function () {
+            var id = $(this).data("id");
+            window.location.href = "/account/message/index.php?id=" + id;
+        });
+        $(document).delegate("#delete", "click", function () {
+            if (!confirm("Are you sure you want to delete this message?")) {
+                return;
+            }
+            var id = $(this).data("id");
+            $.post("/lib/sys/ActionHandler.php?action=ModuleAction&name=MessageCentre&modAction=delete", {id: id}, function (data) {
+                if (data == "SUCCESS") {
+                    window.location.href = "/account/index.php?tab=5";
+                } else {
+                    sendError(".message-centre > .error", data);
+                }
+            });
+        });
+        $(document).delegate(".message-centre > .compose", "click", function () {
+            window.location.href = "/account/message/compose/";
+        });
+        $(document).delegate(".message-centre > .refresh", "click", function () {
+            $.post("/lib/sys/ActionHandler.php?action=ModuleAction&name=MessageCentre&modAction=refresh", {}, function (data) {
+                if (data.lastIndexOf("SUCCESS", 0) === 0) {
+                    data = data.replace("SUCCESS", "");
+                    $(".message-centre").html(data);
+                } else {
+                    sendError(".message-centre > .error", data);
+                }
+            });
+        });
+    });
+</script>

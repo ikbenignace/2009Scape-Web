@@ -1,0 +1,51 @@
+<script type="text/javascript" src="/lib/style/js/ckeditor/ckeditor.js"></script>
+<div class="forum-prefs">
+    <h4 class="green-msg" style="display: none;"></h4>
+    <h4>Profile Image:</h4>
+    <img class="prof-img" style="width: 100px; height: 100px; border: 1px solid #000; border-radius: 5px;"
+         src="[$profileImage]"/>
+    <div>&nbsp;Profile Image URL</div>
+    <form class="update-profile-image">
+        <input class="profile-image-val" type="text" value="[$profileImage]" placeholder="Enter an image URL">
+        <input class="btn profile-image" type='submit' name='submit' value='Update Profile Image'>
+    </form>
+    <div class="signature">
+        <br><h4>Edit signature:</h4>
+        <div class="editor">
+            <h4 class="error" id="#sig-error"></h4>
+            <div class="core">
+                <textarea class="ckeditor" name="editor" rows="8" cols="80">[$signature]</textarea>
+                <button class="btn submit">Save Signature</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var editor = CKEDITOR.replace("editor");
+        $(".profile-image").click(function () {
+            $.post("/lib/sys/ActionHandler.php?action=ModuleAction&name=ForumPreference&modAction=updateProfileImage", {profileImage: $(".profile-image-val").val()}, function (data) {
+                if (data.lastIndexOf("SUCCESS", 0) === 0) {
+                    data = data.replace("SUCCESS", "");
+                    $('.prof-img').attr('src', data);
+                    sendError(".green-msg", "You successfully changed your profile image.");
+                } else {
+                    sendError(".error", data);
+                }
+            });
+            return false;
+        });
+        $(document).delegate(".editor > .core > .submit", "click", function () {
+            $.post("/lib/sys/ActionHandler.php?action=ModuleAction&name=ForumPreference&modAction=editSignature", {html: editor.getData()}, function (data) {
+                if (data == "SUCCESS") {
+                    $(".editor > .error").html("");
+                    $(".editor > .error").css("display", "none");
+                    sendError(".editor > .error", "You have successfully edited your signature.");
+                } else {
+                    $(".editor > .error").html(data);
+                    $(".editor > .error").css("display", "block");
+                }
+            });
+        });
+    });
+</script>

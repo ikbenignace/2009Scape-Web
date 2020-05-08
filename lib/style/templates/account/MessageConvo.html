@@ -1,0 +1,54 @@
+<script type="text/javascript" src="/lib/style/js/ckeditor/ckeditor.js"></script>
+<h4 class="error"></h4>
+
+<div class="message-centre type conversation">
+    <div class="community">
+        <div class="titleBar" style="width:690px;">
+            <span>Viewing Message: [$subject]</span>
+        </div>
+    </div>
+
+    <div class="message-centre convo" style="">
+        <span class='username'>[$username] </span><span class='sub'>says</span> <span>TO</span> <span class='username'>[$recipient] </span>
+        <div class="message centre content">
+            [$content]
+        </div>
+        <div class="message centre info">
+            Sent: [$date]
+        </div>
+    </div>
+
+    <div class="editor" style="margin-top:20px; padding-top:10px;padding-bottom:10px; clear:both;">
+        <h4 class="error"></h4>
+        <div class="core">
+            <textarea class="ckeditor" name="editor" rows="8" cols="80"></textarea>
+            <button data-id='[$id]' class="btn reply">Send Reply</button>
+            <button data-id='[$id]' class="btn back">Message Centre</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var editor = CKEDITOR.replace("editor");
+        $(document).delegate(".editor > .core > .reply", "click", function () {
+            var id = $(this).data("id");
+            $.post("/lib/sys/ActionHandler.php?action=ModuleAction&name=MessageCentre&modAction=reply", {
+                html: editor.getData(),
+                id: id
+            }, function (data) {
+                if (data.lastIndexOf("SUCCESS", 0) === 0) {
+                    data = data.replace("SUCCESS", "");
+                    window.location.href = data;
+                } else {
+                    $(".editor > .error").html(data);
+                    $(".editor > .error").css("display", "block");
+                }
+            });
+        });
+        $(document).delegate(".editor > .core > .back", "click", function () {
+            window.location.href = "/account/index.php?tab=5";
+        });
+    });
+
+</script>
