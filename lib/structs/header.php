@@ -44,7 +44,7 @@ if (!Registry::get("sys")->getSecurityManager()->securityCheck("SITE_LOAD")) {
 <div class="fsDialogue playoptions">
     <div class="content">
         <img src="/lib/images/Bandos.png"/>
-        <a href="/lib/live/arios-launcher.jar?v=1" id="download"></a>
+        <a href="#" id="download"></a>
         <p class="help"><b>To Register:</b> Download the client and select 'Create an Account' on the main client
             screen.</p>
         <p class="help"><b>Trouble playing?</b> Head on over to our <a href="/community">Community forums</a> and make a
