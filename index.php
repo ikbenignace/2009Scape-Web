@@ -11,7 +11,7 @@ require_once($_SERVER ['DOCUMENT_ROOT'] . "/lib/init.php");
 <div class='left-content'>
     <div id='slider-wrapper'>
         <div id='slider'>
-            <iframe width="620" height="350" src="https://www.youtube.com/embed/ZAEcAS1JQ-U" frameborder="0"
+            <iframe width="620" height="350" src="https://www.youtube.com/embed/SR_J-1axNl4" frameborder="0"
                     allowfullscreen></iframe>
         </div>
     </div>

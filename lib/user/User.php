@@ -445,7 +445,7 @@ class User
     public function getProfileImage()
     {
         if ($this->data['profileImage'] == null) {
-            return 'https://rs.mella.ga/lib/images/defaultprofile1.png';
+            return DOMAIN.'/lib/images/defaultprofile1.png';
         }
         return $this->data['profileImage'];
     }

@@ -6,12 +6,11 @@ if (!Registry::get("sys")->getSecurityManager()->securityCheck("SITE_LOAD")) {
     die("You have loaded too many pages in a short amount of time.");
 }
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!doctype html>
 <html>
 <head>
     <title><?php echo defined('TITLE') ? TITLE . " - " . BASE_TITLE : BASE_TITLE; ?></title>
-    <meta http-equiv='content-Type' content='text/html; charset=utf-8'>
-    <meta http-equiv='content-language' content='en-gb'>
+    <meta charset="utf-8">
     <meta name='author' content='<?= SITE_NAME ?>'>
     <meta name='description' content="<?php echo DESCRIPTION; ?>">
     <meta name="keywords" content="<?php echo KEYWORDS; ?>"/>
@@ -21,7 +20,6 @@ if (!Registry::get("sys")->getSecurityManager()->securityCheck("SITE_LOAD")) {
     <link href="/lib/style/style.css?rand=<?php echo rand(1000, 10000000); ?>" rel='stylesheet'>
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 </head>
 <body>
 <?php if (isset($_GET['ref'])) { ?>
