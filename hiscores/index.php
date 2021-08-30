@@ -58,7 +58,7 @@ if (isset($_GET['start'])) {
                 <li><a data-skill="1" href=''><img
                                 src='../lib/images/skills/defence.png'><span>Defence</span></a></li>
                 <li><a data-skill="2" href=''><img
-                                src='..lib/images/skills/strength.png'><span>Strength</span></a></li>
+                                src='../lib/images/skills/strength.png'><span>Strength</span></a></li>
                 <li><a data-skill="3" href=''><img
                                 src='../lib/images/skills/hitpoints.png'><span>Hitpoints</span></a></li>
                 <li><a data-skill="4" href=''><img
